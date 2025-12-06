@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres:alpine
+    restart: always
+    # shm_size: 128mb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: trip_expenses
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env.dev
+    networks:
+      - db_network
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    ports:
+      - "8001:8001"
+    env_file: .env.dev
+    networks:
+      - db_network
+
+volumes:
+  pgdata:
+
+networks:
+  db_network:
+    driver: bridge
