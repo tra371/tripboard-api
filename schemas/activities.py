@@ -3,14 +3,12 @@ from datetime import datetime
 from fastapi import Form
 from pydantic import BaseModel, field_serializer
 
-from schemas.calendars import CalendarOut
 from schemas.participants import ParticipantOut
 
 
-class TripOut(BaseModel):
+class ActivityOut(BaseModel):
     title: str
     slug: str
-    calendars: list[CalendarOut]
     participants: list[ParticipantOut]
     created_at: datetime
     updated_at: datetime | None = None
@@ -25,23 +23,23 @@ class TripOut(BaseModel):
         from_attributes = True
 
 
-class TripCreate(BaseModel):
+class ActivityCreate(BaseModel):
     title: str
 
     @classmethod
     def as_form(
         cls,
         title: str = Form(...),  # type: ignore[name-defined]
-    ) -> "TripCreate":
+    ) -> "ActivityCreate":
         return cls(title=title)
 
 
-class TripUpdate(BaseModel):
+class ActivityUpdate(BaseModel):
     title: str
 
     @classmethod
     def as_form(
         cls,
         title: str = Form(...),  # type: ignore[name-defined]
-    ) -> "TripUpdate":
+    ) -> "ActivityUpdate":
         return cls(title=title)

@@ -10,3 +10,6 @@ wheels/
 .venv
 
 .env*
+
+# nvim config files
+pyrightconfig.json

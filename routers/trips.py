@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from core.db import get_db
+from routers import participants, calendars
 from schemas.trips import TripCreate, TripOut, TripUpdate
 from services.trip_service import (
     delete_trip_by_slug,
@@ -16,6 +17,14 @@ from services.trip_service import (
 router = APIRouter(
     prefix="/trips",
     tags=["trips"],
+)
+router.include_router(
+    participants.router,
+    prefix="/{trip_slug}/participants",
+)
+router.include_router(
+    calendars.router,
+    prefix="/{trip_slug}/calendars"
 )
 
 DBSession = Annotated[Session, Depends(get_db)]

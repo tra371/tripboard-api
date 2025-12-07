@@ -29,8 +29,6 @@ def get_trip_by_slug(slug: str, db: Session):
 
 def insert_trip(data: TripCreate, db: Session) -> Trip:
     slug = slugify_trip(data.title)
-    if not slug:
-        slug = f"trip-{int()}"
 
     # For now non-english/latin titles are not checked for uniqueness
     existing = db.query(Trip).filter(Trip.slug == slug).first()

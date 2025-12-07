@@ -15,3 +15,11 @@ def slugify_trip(title: str) -> str:
     if not slug:
         slug = f"trip-{int(datetime.now(timezone.utc).timestamp())}"
     return slug.strip("-").lower()
+
+
+def slugify_activity(title: str) -> str:
+    normalized_title = normalize_str(title)
+    slug = re.sub(r"[^a-zA-Z0-9]+", "-", normalized_title)
+    if not slug:
+        slug = f"activity-{int(datetime.now(timezone.utc).timestamp())}"
+    return slug.strip("-").lower()

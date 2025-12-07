@@ -3,7 +3,16 @@ from __future__ import annotations
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, Table
+from sqlalchemy import (
+    Column,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Table,
+    UniqueConstraint,
+)
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import (
     DeclarativeBase,
@@ -45,6 +54,11 @@ class Trip(Base):
     )
     slug: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
     title: Mapped[str] = mapped_column(String, nullable=False)
+
+    participants: Mapped[list[Participant]] = relationship(
+        back_populates="trip",
+        cascade="all, delete-orphan",
+    )
 
     calendars: Mapped[list[Calendar]] = relationship(
         back_populates="trip",
@@ -132,9 +146,18 @@ class Activity(Base):
 
 class Participant(Base):
     __tablename__ = "participants"
+    __table_args__ = (
+        UniqueConstraint("trip_id", "name", name="uq_participant_trip_name"),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String, nullable=False)
+    trip_id: Mapped[uuid.UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        ForeignKey("trips.id"),
+        nullable=False,
+    )
+    trip: Mapped[Trip] = relationship(back_populates="participants")
 
     activities: Mapped[list[Activity]] = relationship(
         secondary=activity_participant,
