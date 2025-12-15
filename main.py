@@ -10,7 +10,7 @@ app = FastAPI(
     title="TripBoard API",
     version="1.0.0",
     openapi_url="/openapi.json",
-    docs_url="/docs"
+    docs_url="/docs",
 )
 
 origins = [
@@ -42,4 +42,5 @@ async def read_root():
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run("main:app", host="0.0.0.0", port=settings.port, reload=settings.debug)

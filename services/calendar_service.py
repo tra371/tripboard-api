@@ -28,9 +28,7 @@ def get_calendar_by_id(trip_slug: str, id: int, db: Session):
     return get_calendar_or_404(trip_slug, id, db)
 
 
-def add_calendar_to_trip(
-    trip_slug: str, data: CalendarCreate, db: Session
-) -> Calendar:
+def add_calendar_to_trip(trip_slug: str, data: CalendarCreate, db: Session) -> Calendar:
     trip = get_trip_or_404(trip_slug, db)
     existing = (
         db.query(Calendar)

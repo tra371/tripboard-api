@@ -1,13 +1,14 @@
-import pytest
 from datetime import date, datetime, timezone
+
+import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
-from schemas.trips import TripOut
-from schemas.participants import ParticipantOut
-from schemas.calendars import CalendarOut
-from core.models import Trip, Participant, Calendar
-from services.trip_service import get_trip_or_404
 
+from core.models import Calendar, Participant, Trip
+from schemas.calendars import CalendarOut
+from schemas.participants import ParticipantOut
+from schemas.trips import TripOut
+from services.trip_service import get_trip_or_404
 
 BASE_URL = "/api/v1/trips"
 
@@ -16,7 +17,12 @@ BASE_URL = "/api/v1/trips"
 @pytest.fixture(scope="session")
 def trip(db_session: Session) -> TripOut:
     """Create one trip in the test DB, shared across activity tests."""
-    trip = Trip(title="Dawei Trip", slug="dawei-trip", is_active=True, created_at=datetime.now(timezone.utc))
+    trip = Trip(
+        title="Dawei Trip",
+        slug="dawei-trip",
+        is_active=True,
+        created_at=datetime.now(timezone.utc),
+    )
     db_session.add(trip)
     db_session.commit()
     db_session.refresh(trip)
@@ -30,7 +36,9 @@ def calendar(db_session: Session, trip: TripOut) -> CalendarOut:
     date_str = "2015-12-29"
     date_obj = date.fromisoformat(date_str)
     trip_ = get_trip_or_404(trip.slug, db_session)
-    calendar = Calendar(dt=date_obj, created_at=datetime.now(timezone.utc), trip_id=trip_.id)
+    calendar = Calendar(
+        dt=date_obj, created_at=datetime.now(timezone.utc), trip_id=trip_.id
+    )
     db_session.add(calendar)
     db_session.commit()
     db_session.refresh(calendar)
@@ -42,7 +50,9 @@ def calendar(db_session: Session, trip: TripOut) -> CalendarOut:
 def participant(db_session: Session, trip: TripOut) -> ParticipantOut:
     """Create one participant in the test DB, shared across activity tests."""
     trip_ = get_trip_or_404(trip.slug, db_session)
-    participant = Participant(name="Anya Taylor Joy", created_at=datetime.now(timezone.utc), trip_id=trip_.id)
+    participant = Participant(
+        name="Anya Taylor Joy", created_at=datetime.now(timezone.utc), trip_id=trip_.id
+    )
     db_session.add(participant)
     db_session.commit()
     db_session.refresh(participant)
@@ -91,7 +101,9 @@ def test_activity_crud_flow(client: TestClient, trip: TripOut, calendar: Calenda
     assert create_conflict_whitespace_400.status_code == 400
 
     # Read single
-    read = client.get(f"{BASE_URL}/{trip.slug}/calendars/{calendar.id}/activities/{slug}")
+    read = client.get(
+        f"{BASE_URL}/{trip.slug}/calendars/{calendar.id}/activities/{slug}"
+    )
     assert read.status_code == 200
     assert read.json()["slug"] == slug
 
@@ -108,14 +120,20 @@ def test_activity_crud_flow(client: TestClient, trip: TripOut, calendar: Calenda
     assert updated_slug == "updated-activity-1"
 
     # Delete
-    delete = client.delete(f"{BASE_URL}/{trip.slug}/calendars/{calendar.id}/activities/{updated_slug}")
+    delete = client.delete(
+        f"{BASE_URL}/{trip.slug}/calendars/{calendar.id}/activities/{updated_slug}"
+    )
     assert delete.status_code == 204
 
     # Ensure gone
-    read_again = client.get(f"{BASE_URL}/{trip.slug}/calendars/{calendar.id}/activities/{slug}")
+    read_again = client.get(
+        f"{BASE_URL}/{trip.slug}/calendars/{calendar.id}/activities/{slug}"
+    )
     assert read_again.status_code == 404
     # Ensure activity with old slug also gone
-    read_again = client.get(f"{BASE_URL}/{trip.slug}/calendars/{calendar.id}/activities/{updated_slug}")
+    read_again = client.get(
+        f"{BASE_URL}/{trip.slug}/calendars/{calendar.id}/activities/{updated_slug}"
+    )
     assert read_again.status_code == 404
 
 
@@ -165,4 +183,3 @@ def test_add_and_remove_participant_in_activity(
     assert remove_again.status_code == 400
     body_remove_again = remove_again.json()
     assert body_remove_again["detail"] == "Participant is already not in the activity"
-

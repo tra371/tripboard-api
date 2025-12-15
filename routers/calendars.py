@@ -4,12 +4,12 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from core.db import get_db
-from schemas.calendars import CalendarOut, CalendarCreate, CalendarUpdate
+from schemas.calendars import CalendarCreate, CalendarOut, CalendarUpdate
 from services.calendar_service import (
-    get_calendar_by_id,
     add_calendar_to_trip,
-    update_calendar_by_id,
     delete_calendar_by_id,
+    get_calendar_by_id,
+    update_calendar_by_id,
 )
 
 router = APIRouter()

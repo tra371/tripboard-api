@@ -30,7 +30,7 @@ def get_trip_by_slug(slug: str, db: Session):
 
 def get_active_trip(db: Session) -> Trip | None:
     print("inside service")
-    active_trip= db.query(Trip).filter(Trip.is_active.is_(True)).first()
+    active_trip = db.query(Trip).filter(Trip.is_active.is_(True)).first()
     print(active_trip)
     return active_trip
 
@@ -45,12 +45,9 @@ def insert_trip(data: TripCreate, db: Session) -> Trip:
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Trip with this title already exists",
         )
-    
+
     if data.is_active:
-        db.execute(
-            update(Trip)
-            .values(is_active=False)
-        )
+        db.execute(update(Trip).values(is_active=False))
 
     trip = Trip(title=data.title, is_active=data.is_active, slug=slug)
 
@@ -70,10 +67,7 @@ def insert_trip(data: TripCreate, db: Session) -> Trip:
 def update_trip_by_slug(slug: str, data: TripUpdate, db: Session) -> Trip:
     trip = get_trip_or_404(slug, db)
     if data.is_active:
-        db.execute(
-            update(Trip)
-            .values(is_active=False)
-        )
+        db.execute(update(Trip).values(is_active=False))
     trip.title = data.title
     trip.slug = slugify_trip(data.title)
     trip.is_active = data.is_active
