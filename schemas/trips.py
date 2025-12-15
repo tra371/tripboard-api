@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from fastapi import Form
-from pydantic import BaseModel, field_serializer, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_serializer
 
 from schemas.calendars import CalendarOut
 from schemas.participants import ParticipantOut
@@ -33,12 +33,9 @@ class TripCreate(BaseModel):
     def as_form(
         cls,
         title: str = Form(...),  # type: ignore[name-defined]
-        is_active: bool | None = Form(False)
+        is_active: bool | None = Form(False),
     ) -> "TripCreate":
-        return cls(
-            title=title,
-            is_active=is_active if is_active is not None else False
-        )
+        return cls(title=title, is_active=is_active if is_active is not None else False)
 
 
 class TripUpdate(BaseModel):
@@ -49,9 +46,6 @@ class TripUpdate(BaseModel):
     def as_form(
         cls,
         title: str = Form(...),  # type: ignore[name-defined]
-        is_active: bool | None = Form(False)
+        is_active: bool | None = Form(False),
     ) -> "TripUpdate":
-        return cls(
-            title=title,
-            is_active=is_active if is_active is not None else False
-        )
+        return cls(title=title, is_active=is_active if is_active is not None else False)

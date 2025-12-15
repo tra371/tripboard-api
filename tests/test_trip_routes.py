@@ -15,10 +15,7 @@ def test_read_trips_returns_list(client: TestClient):
 def test_create_trip(client: TestClient):
     resp = client.post(
         "/api/v1/trips/",
-        data={
-            "title": "Bangkok Trip",
-            "is_active": "true"
-        },
+        data={"title": "Bangkok Trip", "is_active": "true"},
     )
     assert resp.status_code == 200
     body = resp.json()
@@ -31,10 +28,7 @@ def test_trip_crud_flow(client: TestClient):
     # Create
     create = client.post(
         "/api/v1/trips/",
-        data={
-            "title": "Yangon Trip",
-            "is_active": "true"
-        },
+        data={"title": "Yangon Trip", "is_active": "true"},
     )
     assert create.status_code == 200
     trip = create.json()
@@ -80,9 +74,7 @@ def test_trip_crud_flow(client: TestClient):
     # Update
     update = client.put(
         f"/api/v1/trips/{slug}",
-        data={
-            "title": "Updated Yangon Trip"
-        },
+        data={"title": "Updated Yangon Trip"},
     )
     assert update.status_code == 200
     updated = update.json()
@@ -144,4 +136,3 @@ def test_only_one_active_trip(client: TestClient):
     read_b = client.get(f"/api/v1/trips/{trip_b['slug']}")
     assert read_b.status_code == 200
     assert read_b.json()["is_active"] is False
-

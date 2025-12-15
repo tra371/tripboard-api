@@ -70,7 +70,11 @@ def add_activity_to_calendar(
 
 
 def add_participant_to_activity(
-    trip_slug: str, calendar_id: int, activity_slug: str, participant_id: int, db: Session
+    trip_slug: str,
+    calendar_id: int,
+    activity_slug: str,
+    participant_id: int,
+    db: Session,
 ) -> Activity:
     calendar = get_calendar_or_404(trip_slug, calendar_id, db)
     participant = get_participant_or_404(trip_slug, participant_id, db)
@@ -109,7 +113,11 @@ def add_participant_to_activity(
 
 
 def remove_participant_from_activity(
-    trip_slug: str, calendar_id: int, activity_slug: str, participant_id: int, db: Session
+    trip_slug: str,
+    calendar_id: int,
+    activity_slug: str,
+    participant_id: int,
+    db: Session,
 ) -> Activity:
     calendar = get_calendar_or_404(trip_slug, calendar_id, db)
     participant = get_participant_or_404(trip_slug, participant_id, db)
@@ -118,7 +126,7 @@ def remove_participant_from_activity(
         .filter(
             Activity.slug == activity_slug,
             Activity.calendar_id == calendar.id,
-            Activity.participants.any(Participant.id == participant_id)
+            Activity.participants.any(Participant.id == participant_id),
         )
         .first()
     )

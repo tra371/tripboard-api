@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from fastapi import Form
-from pydantic import BaseModel, field_serializer, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_serializer
 
 
 class ParticipantOut(BaseModel):

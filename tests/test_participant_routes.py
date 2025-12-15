@@ -1,20 +1,29 @@
+from datetime import datetime, timezone
+
 import pytest
 from fastapi.testclient import TestClient
-from schemas.trips import TripOut
-from core.models import Trip
 from sqlalchemy.orm import Session
-from datetime import datetime, timezone
+
+from core.models import Trip
+from schemas.trips import TripOut
+
 
 # Create and persist a sample trip to test participants
 @pytest.fixture(scope="session")
 def trip(db_session: Session) -> TripOut:
     """Create one trip in the test DB, shared across participant tests."""
-    trip = Trip(title="Chaung Thar Trip", slug="chaung-thar-trip", is_active=True, created_at=datetime.now(timezone.utc))
+    trip = Trip(
+        title="Chaung Thar Trip",
+        slug="chaung-thar-trip",
+        is_active=True,
+        created_at=datetime.now(timezone.utc),
+    )
     db_session.add(trip)
     db_session.commit()
     db_session.refresh(trip)
 
     return TripOut.model_validate(trip)
+
 
 BASE_URL = "/api/v1/trips"
 

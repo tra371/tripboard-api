@@ -6,10 +6,9 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from main import app
 from core.db import get_db
 from core.models import Base
-
+from main import app
 
 # file-based SQLite in tmp dir
 tmp_db_fd, tmp_db_path = tempfile.mkstemp(suffix=".db")
