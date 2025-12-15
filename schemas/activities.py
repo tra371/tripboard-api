@@ -1,12 +1,14 @@
 from datetime import datetime
 
 from fastapi import Form
-from pydantic import BaseModel, field_serializer
+from pydantic import BaseModel, field_serializer, ConfigDict
 
 from schemas.participants import ParticipantOut
 
 
 class ActivityOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     title: str
     slug: str
     participants: list[ParticipantOut]
@@ -18,9 +20,6 @@ class ActivityOut(BaseModel):
         if v is None:
             return None
         return v.astimezone().strftime("%Y-%m-%d %H:%M")
-
-    class Config:
-        from_attributes = True
 
 
 class ActivityCreate(BaseModel):

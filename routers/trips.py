@@ -4,28 +4,17 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from core.db import get_db
-from routers import participants, calendars
 from schemas.trips import TripCreate, TripOut, TripUpdate
 from services.trip_service import (
     delete_trip_by_slug,
+    get_active_trip,
     get_all_trips,
     get_trip_by_slug,
     insert_trip,
     update_trip_by_slug,
 )
 
-router = APIRouter(
-    prefix="/trips",
-    tags=["trips"],
-)
-router.include_router(
-    participants.router,
-    prefix="/{trip_slug}/participants",
-)
-router.include_router(
-    calendars.router,
-    prefix="/{trip_slug}/calendars"
-)
+router = APIRouter()
 
 DBSession = Annotated[Session, Depends(get_db)]
 
@@ -40,6 +29,12 @@ async def read_trips(db: DBSession):
 async def read_trip(slug: str, db: DBSession):
     trip = get_trip_by_slug(slug, db)
     return trip
+
+
+@router.get("/meta/active", response_model=TripOut | None)
+async def read_active_trip(db: DBSession):
+    print("inside route")
+    return get_active_trip(db)
 
 
 @router.post("/", response_model=TripOut)

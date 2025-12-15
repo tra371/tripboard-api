@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
 from sqlalchemy import (
+    Boolean,
     Column,
+    Date,
     DateTime,
     Float,
     ForeignKey,
@@ -54,6 +56,7 @@ class Trip(Base):
     )
     slug: Mapped[str] = mapped_column(String, unique=True, index=True, nullable=False)
     title: Mapped[str] = mapped_column(String, nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     participants: Mapped[list[Participant]] = relationship(
         back_populates="trip",
@@ -80,7 +83,7 @@ class Calendar(Base):
     __tablename__ = "calendars"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    dt: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    dt: Mapped[date] = mapped_column(Date, nullable=False)
 
     trip_id: Mapped[uuid.UUID] = mapped_column(
         PG_UUID(as_uuid=True),

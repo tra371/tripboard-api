@@ -13,8 +13,8 @@ services:
       - "5432:5432"
     env_file:
       - .env.dev
-    networks:
-      - db_network
+    # networks:
+    #   - db_network
 
   adminer:
     image: adminer
@@ -22,23 +22,23 @@ services:
     ports:
       - 8080:8080
 
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    volumes:
-      - .:/app
-    depends_on:
-      - db
-    ports:
-      - "8001:8001"
-    env_file: .env.dev
-    networks:
-      - db_network
+  # backend:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.dev
+  #   volumes:
+  #     - .:/app
+  #   depends_on:
+  #     - db
+  #   ports:
+  #     - "8001:8001"
+  #   env_file: .env.dev
+  #   networks:
+  #     - db_network
 
 volumes:
   pgdata:
 
-networks:
-  db_network:
-    driver: bridge
+# networks:
+#   db_network:
+#     driver: bridge

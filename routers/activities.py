@@ -14,20 +14,18 @@ from services.activity_service import (
     remove_participant_from_activity,
 )
 
-router = APIRouter(
-    tags=["activities"],
-)
+router = APIRouter()
 
 DBSession = Annotated[Session, Depends(get_db)]
 
 
-@router.get("/{activity_slug}", response_model=ActivityOut)
+@router.get("/{trip_slug}/calendars/{calendar_id}/activities/{activity_slug}", response_model=ActivityOut)
 async def read_activity(calendar_id: int, activity_slug: str, db: DBSession):
     activity = get_activity_by_slug(calendar_id, activity_slug, db)
     return activity
 
 
-@router.post("/", response_model=ActivityOut)
+@router.post("/{trip_slug}/calendars/{calendar_id}/activities", response_model=ActivityOut)
 async def create_activity(
     trip_slug: str,
     calendar_id: int,
@@ -38,7 +36,7 @@ async def create_activity(
     return activity
 
 
-@router.post("/{activity_slug}/add_participant/{participant_id}", response_model=ActivityOut)
+@router.post("/{trip_slug}/calendars/{calendar_id}/activities/{activity_slug}/add_participant/{participant_id}", response_model=ActivityOut)
 async def create_participant_in_activity(
     trip_slug: str,
     calendar_id: int,
@@ -49,7 +47,7 @@ async def create_participant_in_activity(
     activity = add_participant_to_activity(trip_slug, calendar_id, activity_slug, participant_id, db)
     return activity
 
-@router.post("/{activity_slug}/remove_participant/{participant_id}", response_model=ActivityOut)
+@router.post("/{trip_slug}/calendars/{calendar_id}/activities/{activity_slug}/remove_participant/{participant_id}", response_model=ActivityOut)
 async def delete_participant_in_activity(
     trip_slug: str,
     calendar_id: int,
@@ -61,7 +59,7 @@ async def delete_participant_in_activity(
     return activity
 
 
-@router.put("/{activity_slug}", response_model=ActivityOut)
+@router.put("/{trip_slug}/calendars/{calendar_id}/activities/{activity_slug}", response_model=ActivityOut)
 async def update_activity(
     calendar_id: int,
     activity_slug: str,
@@ -72,6 +70,6 @@ async def update_activity(
     return activity
 
 
-@router.delete("/{activity_slug}", status_code=204)
+@router.delete("/{trip_slug}/calendars/{calendar_id}/activities/{activity_slug}", status_code=204)
 async def delete_activity(calendar_id: int, activity_slug: str, db: DBSession):
     delete_activity_by_slug(calendar_id, activity_slug, db)

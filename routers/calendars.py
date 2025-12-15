@@ -11,26 +11,19 @@ from services.calendar_service import (
     update_calendar_by_id,
     delete_calendar_by_id,
 )
-from routers import activities
 
-router = APIRouter(
-    tags=["calendars"],
-)
-router.include_router(
-    activities.router,
-    prefix="/{calendar_id}/activities"
-)
+router = APIRouter()
 
 DBSession = Annotated[Session, Depends(get_db)]
 
 
-@router.get("/{calendar_id}", response_model=CalendarOut)
+@router.get("/{trip_slug}/calendars/{calendar_id}", response_model=CalendarOut)
 async def read_calendar(trip_slug: str, calendar_id: int, db: DBSession):
     calendar = get_calendar_by_id(trip_slug, calendar_id, db)
     return calendar
 
 
-@router.post("/", response_model=CalendarOut)
+@router.post("/{trip_slug}/calendars", response_model=CalendarOut)
 async def create_calendar(
     trip_slug: str,
     data: Annotated[CalendarCreate, Depends(CalendarCreate.as_form)],
@@ -40,7 +33,7 @@ async def create_calendar(
     return calendar
 
 
-@router.put("/{calendar_id}", response_model=CalendarOut)
+@router.put("/{trip_slug}/calendars/{calendar_id}", response_model=CalendarOut)
 async def update_calendar(
     trip_slug: str,
     calendar_id: int,
@@ -51,6 +44,6 @@ async def update_calendar(
     return calendar
 
 
-@router.delete("/{calendar_id}", status_code=204)
+@router.delete("/{trip_slug}/calendars/{calendar_id}", status_code=204)
 async def delete_calendar(trip_slug: str, calendar_id: int, db: DBSession):
     delete_calendar_by_id(trip_slug, calendar_id, db)

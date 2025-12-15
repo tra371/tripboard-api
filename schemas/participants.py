@@ -1,10 +1,12 @@
 from datetime import datetime
 
 from fastapi import Form
-from pydantic import BaseModel, field_serializer
+from pydantic import BaseModel, field_serializer, ConfigDict
 
 
 class ParticipantOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     name: str
     created_at: datetime
@@ -15,9 +17,6 @@ class ParticipantOut(BaseModel):
         if v is None:
             return None
         return v.astimezone().strftime("%Y-%m-%d %H:%M")
-
-    class Config:
-        from_attributes = True
 
 
 class ParticipantCreate(BaseModel):
